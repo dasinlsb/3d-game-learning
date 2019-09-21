@@ -151,6 +151,9 @@ public class FirstController : MonoBehaviour, ISceneController, IUserAction
    						new Vector3(0, 1+spacingOffset) * (sideDst.Count + 1);
    		sideDst.Add(role);
    		passers.Remove(role);
+   		for (int i = 0; i < passers.Count; i++) {
+   			passers[i].transform.localPosition = new Vector3(0, 0, -1-spacingOffset) * (i + 1);
+   		}
    		updateGameState();
    	}
    	public void UpBoat(string name) 

@@ -15,8 +15,8 @@ public class FirstController : MonoBehaviour, ISceneController, IUserAction, ISS
 	private Vector3 boatPosSrc     = new Vector3(-2.5f, 1, 0);
 	private Vector3 boatPosDst     = new Vector3(2.5f, 1, 0);
 	private Vector3 rolePosSrc     = new Vector3(-4.5f, 1, 0);
-	private const float boatSpeed      = 5.0f;
-  private const float roleSpeed      = 5.0f;
+	private const float boatSpeed      = 10.0f;
+  private const float roleSpeed      = 10.0f;
 	private const float spacingOffset  = 0.2f;
 	// private Vector3 rolsPosDst     = new Vector3(4.5f, 1, 0);
 
@@ -36,6 +36,7 @@ public class FirstController : MonoBehaviour, ISceneController, IUserAction, ISS
     // Start is called before the first frame update
 
   public void SSActionEvent(SSAction action) {
+    gameState = GameState.Playing;
     if (action == this.bootToDst) {
       this.boatState = MoveState.AtDst;
     } else if (action == this.bootToSrc) {
@@ -56,7 +57,6 @@ public class FirstController : MonoBehaviour, ISceneController, IUserAction, ISS
       }
       updateGameState();
     }
-    gameState = GameState.Playing;
   }
     void Awake()
     {

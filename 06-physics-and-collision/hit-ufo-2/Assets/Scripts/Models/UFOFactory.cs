@@ -15,7 +15,6 @@ public class UFOFactory : MonoBehaviour
     public void Withdraw(GameObject ufo)
     {
         ufo.transform.position = hidePosition;
-        ufo.GetComponent<UFOController>().speed = 0;
         this.ufoPool.Enqueue(ufo);
     }
     public GameObject Launch(int level)

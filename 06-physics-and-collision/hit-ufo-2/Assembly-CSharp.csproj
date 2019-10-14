@@ -54,9 +54,8 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\Controllers\Action.cs" />
+     <Compile Include="Assets\Scripts\Controllers\ActionAdapter.cs" />
      <Compile Include="Assets\Scripts\Controllers\ActionManager.cs" />
-     <Compile Include="Assets\Scripts\Controllers\ActionManagerAdapter.cs" />
-     <Compile Include="Assets\Scripts\Controllers\ActionManagerTarget.cs" />
      <Compile Include="Assets\Scripts\Controllers\Director.cs" />
      <Compile Include="Assets\Scripts\Controllers\FirstController.cs" />
      <Compile Include="Assets\Scripts\Controllers\IActionCallback.cs" />
@@ -64,7 +63,8 @@
      <Compile Include="Assets\Scripts\Controllers\IUserAction.cs" />
      <Compile Include="Assets\Scripts\Controllers\LevelManager.cs" />
      <Compile Include="Assets\Scripts\Controllers\Shooter.cs" />
-     <Compile Include="Assets\Scripts\Controllers\UFOAction.cs" />
+     <Compile Include="Assets\Scripts\Controllers\UFOActionDynamics.cs" />
+     <Compile Include="Assets\Scripts\Controllers\UFOActionKinematics.cs" />
      <Compile Include="Assets\Scripts\Controllers\UFOController.cs" />
      <Compile Include="Assets\Scripts\Models\Singleton.cs" />
      <Compile Include="Assets\Scripts\Models\UFOFactory.cs" />

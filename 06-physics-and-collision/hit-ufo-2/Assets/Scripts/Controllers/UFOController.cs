@@ -5,8 +5,7 @@ using System;
 
 public class UFOController : MonoBehaviour
 {
-    public float speed;
-    public Vector3 direction;
+    public Vector3 speed;
     public int score;
     public Color color;
     private void Update() 

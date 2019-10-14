@@ -5,7 +5,7 @@ using UnityEngine;
 public class UserGUI : MonoBehaviour
 {
 	private IUserAction action;
-	private const int buttonX = 150;
+	private const int buttonX = 140;
 	private const int buttonY = 50;
 	private const int gridX = 160;
 	private const int gridY = 80;
@@ -30,6 +30,10 @@ public class UserGUI : MonoBehaviour
 		if (GUI.Button(new Rect(buttonX*2+60, 0, buttonX, buttonY), "NEXT ROUND"))
 		{
 			action.NextRound();
+		}
+		if (GUI.Button(new Rect(buttonX*3+90, 0, buttonX, buttonY), "SWITCH"))
+		{
+			action.SwitchActionMode();
 		}
 		GUIStyle fontStyle = new GUIStyle();
 		fontStyle.fontSize = 25;

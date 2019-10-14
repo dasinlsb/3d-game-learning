@@ -22,8 +22,7 @@ public class LevelManager : MonoBehaviour {
         Func<int, int> rndpn = (n) => { return random.Next(0, n*2) - n; };
         ufo.transform.position = new Vector3(rndn(maxAxisLen[0]), rndn(maxAxisLen[1]), rndn(maxAxisLen[2]));
         var ufoCtl = ufo.GetComponent<UFOController>();
-        ufoCtl.speed = (float)curLevel *0.05f;
-        ufoCtl.direction = new Vector3(rndpn(10), rndpn(10), rndpn(10));
+        ufoCtl.speed = new Vector3(rndpn(10), rndpn(10), rndpn(10)) * (0.05f * (float)curLevel);
         int ufoKind = rndn(ufoFactory.ufoKinds);
         float scale = ufoFactory.ufoScales[ufoKind];
         ufo.transform.localScale = new Vector3(scale, scale, scale);

@@ -9,8 +9,12 @@ public class FirstController : MonoBehaviour, ISceneController, IUserAction, IAc
   private Shooter shooter;
   private LevelManager levelManager;
   private List<GameObject> visibleUfos;
+  private ActionAdapter actionAdapter;
   private ActionManager actionManager;
   private Director director;
+
+  private List<Action> startedActions;
+  private bool willSwitchActionMode;
   
   public enum GameState
   {
@@ -22,6 +26,7 @@ public class FirstController : MonoBehaviour, ISceneController, IUserAction, IAc
   {
     director = Director.getInstance();
     director.currentSceneController = this;
+    actionAdapter = new ActionAdapter();
     actionManager = gameObject.AddComponent<ActionManager>();
     ufoFactory = Singleton<UFOFactory>.Instance;
     shooter = gameObject.AddComponent<Shooter>();
@@ -33,7 +38,6 @@ public class FirstController : MonoBehaviour, ISceneController, IUserAction, IAc
   void Update()
   {
     if (gameState != GameState.Playing) return;
-    
     for(; visibleUfos.Count < levelManager.curLevel + 2;)
     {
       GameObject newUfo = ufoFactory.Launch(levelManager.curLevel);
@@ -41,24 +45,26 @@ public class FirstController : MonoBehaviour, ISceneController, IUserAction, IAc
       visibleUfos.Add(newUfo);
       runAction(newUfo, this);
     }
-    levelManager.CheckScore();
   }
 
   private void runAction(GameObject ufo, IActionCallback callback)
   {
-    var ctl = ufo.GetComponent<UFOController>() as UFOController;
-    var action = UFOAction.GetAction(ctl.speed, ctl.direction) as Action;
-    action.gameObject = ufo;
-    action.transform = ufo.transform;
-    action.callback = callback;
+    var action = actionAdapter.MakeAction(ufo, callback);
+    startedActions.Add(action);
     actionManager.AddAction(action);
   }
 
   public void UFOIsShot(GameObject ufo) 
   {
-    levelManager.AddScore(ufo.GetComponent<UFOController>().score);
+    levelManager.curScore += ufo.GetComponent<UFOController>().score;
     visibleUfos.Remove(ufo);
     ufoFactory.Withdraw(ufo);
+    var actions = startedActions.FindAll(action => action.gameObject == ufo);
+    if (actions.Count != 0) 
+    {
+      actionManager.RemoveAction(actions[0]);
+    }
+    levelManager.CheckScore();
   }
 
   public void ActionEvent(Action action)
@@ -69,6 +75,8 @@ public class FirstController : MonoBehaviour, ISceneController, IUserAction, IAc
   }
 
   public void LoadResources() {
+    willSwitchActionMode = false;
+    startedActions = new List<Action>();
     visibleUfos = new List<GameObject>();
   }
 
@@ -80,11 +88,22 @@ public class FirstController : MonoBehaviour, ISceneController, IUserAction, IAc
     if (gameState == GameState.NotStarted) return;
     gameState = GameState.Pausing;
     levelManager.LevelUp();
+    updateActionMode();
     foreach(var ufo in visibleUfos)
     {
-      levelManager.modifyUfoLevel(ufo);
+      ufoFactory.Withdraw(ufo);
     }
+    visibleUfos.Clear();
     gameState = GameState.Playing;
+  }
+
+  private void updateActionMode()
+  {
+    if (willSwitchActionMode)
+    {
+      willSwitchActionMode = false;
+      actionAdapter.SwitchActionMode();    
+    }
   }
 
   public void RestartGame() 
@@ -108,6 +127,13 @@ public class FirstController : MonoBehaviour, ISceneController, IUserAction, IAc
     gameState = GameState.NotStarted;
     LoadResources();
     gameState = GameState.Playing;
+  }
+
+  public void SwitchActionMode()
+  {
+    if (gameState == GameState.NotStarted) return;
+    willSwitchActionMode = true;
+    NextRound();
   }
 
   public int GetRound()

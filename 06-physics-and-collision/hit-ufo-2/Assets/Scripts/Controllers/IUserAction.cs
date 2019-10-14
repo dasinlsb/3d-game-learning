@@ -9,4 +9,5 @@ public interface IUserAction
 	int GetScore();
 	int GetRound();
 	void NextRound();
+	void SwitchActionMode();
 }

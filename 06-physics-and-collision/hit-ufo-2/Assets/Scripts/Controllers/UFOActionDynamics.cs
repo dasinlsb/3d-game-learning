@@ -2,21 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UFOAction : Action
+public class UFOActionDynamics : Action
 {
-    public float speed;
-    public Vector3 direction;
-    public static UFOAction GetAction(float speed, Vector3 direction)
+    public Vector3 speed;
+    public static UFOActionDynamics GetAction(Vector3 speed)
     {
-        UFOAction action = ScriptableObject.CreateInstance<UFOAction>();
+        UFOActionDynamics action = ScriptableObject.CreateInstance<UFOActionDynamics>();
         action.speed = speed;
-        action.direction = direction;
         return action;
     }
 
     public override void Update() 
     {
-        this.transform.position += this.speed * Time.deltaTime * this.direction;
+        this.transform.position += Time.deltaTime * this.speed;
+        this.speed += new Vector3(0, Time.deltaTime * -3.0f, 0);
         if (!isInView(this.transform.position))
         {
             this.destroy = true;
@@ -34,7 +33,7 @@ public class UFOAction : Action
     {
         Vector3 viewpos = Camera.main.WorldToViewportPoint(position);
         return viewpos.x > 0.0f && viewpos.x < 1.0f &&
-            viewpos.y > 0.0 && viewpos.y < 1.0f;
+            viewpos.y > 0.0f && viewpos.y < 1.0f;
     }
 
 }

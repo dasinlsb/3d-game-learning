@@ -6,4 +6,5 @@ public interface IUserAction
 {
 	void StartGame();
 	void RestartGame();
+	FirstController.GameState GetGameState();
 }

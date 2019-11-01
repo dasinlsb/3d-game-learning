@@ -22,6 +22,16 @@ public class UserGUI : MonoBehaviour
 		if (Input.GetKeyDown(KeyCode.Space)) {
 			action.RestartGame();
 		}
-		GUI.Label(new Rect(0, 0, 100, 100), "Notice");
+		FirstController.GameState gameState = action.GetGameState();
+		if (gameState == FirstController.GameState.Lose)
+		{
+			GUIStyle style = new GUIStyle();
+			style.fontSize = 40;
+			GUI.Label(new Rect(0, 0, 600, 100), "YOU ARE DEAD", style);
+			if (GUI.Button(new Rect(0, 100, 100, 50), "RESART!"))
+			{
+				action.RestartGame();
+			}
+		}
     }
 }

@@ -4,9 +4,8 @@ using UnityEngine;
  
 
 public class Maze : MonoBehaviour {
-    
+    public FirstController gameController;    
     public IntVec2 size;
-	
 	public MazeCell cellPrefab;
     public MazePassage passagePrefab;
     public MazeDoor doorPrefab;
@@ -33,8 +32,8 @@ public class Maze : MonoBehaviour {
 
     public IEnumerator Generate()
     {
-        size = new IntVec2(5, 5);
-        generationStepDelay = 0.005f;
+        size = new IntVec2(6, 6);
+        generationStepDelay = 0.001f;
         cells = new MazeCell[size.x, size.z];
         WaitForSeconds delay = new WaitForSeconds(generationStepDelay);
         List<MazeCell> activeCells = new List<MazeCell>();
@@ -149,6 +148,9 @@ public class Maze : MonoBehaviour {
             Debug.Log("and the size is: " + size.x + ", " + size.z);
         }
         cells[coord.x, coord.z] = newCell;
+        newCell.maze = this;
+        newCell.patrol = null;
+        newCell.role = "Empty";
         newCell.coord = coord;
         newCell.transform.parent = transform;
         newCell.transform.localPosition = new Vector3(coord.x - size.x * 0.5f + 0.5f, 0f, coord.z - size.z * 0.5f + 0.5f);
@@ -160,7 +162,7 @@ public class Maze : MonoBehaviour {
         return cells[coord.x, coord.z];
     }
 
-    private bool IsValidCoord(IntVec2 coord)
+    public bool IsValidCoord(IntVec2 coord)
     {
         return 0 <= coord.x && coord.x < size.x && 0 <= coord.z && coord.z < size.z;
     }
@@ -168,6 +170,16 @@ public class Maze : MonoBehaviour {
     public IntVec2 RandomCoord()
     {
         return new IntVec2(Random.Range(0, size.x), Random.Range(0, size.z));
+    }
+
+    public IntVec2 RandomOtherCoord(List<IntVec2> coords)
+    {
+        while (true) {
+            var newCoord = RandomCoord();
+            if (coords.FindAll((coord) => coord.x == newCoord.x && coord.z == newCoord.z).Count == 0){
+                return newCoord;
+            } 
+        }
     }
 
 }

@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class MazeCell : MonoBehaviour
 {
+	public Maze maze;
+	public List<Patrol> patrolListeners;
+	public Patrol patrol;
+	public string role;
     public IntVec2 coord;
 	public MazeRoom room;
     private MazeCellEdge[] edges = new MazeCellEdge[MazeDirections.Count];
@@ -42,20 +46,54 @@ public class MazeCell : MonoBehaviour
 		room.AddCell(this);
 		transform.GetChild(0).GetComponent<Renderer>().material = room.settings.floorMaterial;
 	}
-	public void OnPlayerEntered(MazeDirection direction)
+	public void OnPatrolEntered(string newRole, Patrol newPatrol)
 	{
+		if (role == "Player")
+		{
+			maze.gameController.Dead();
+			return;
+		}
+		role = newRole;
+		patrol = newPatrol;
+	}
+	public void OnPatrolExited()
+	{
+		role = "Empty";
+		patrol = null;
+	}
+
+	public void OnPlayerEntered(string newRole, MazeDirection direction)
+	{
+		role = newRole;
 		room.Show();
+		foreach (Patrol listner in patrolListeners)
+		{
+			listner.React(coord);
+		}
 	}
 	public void OnPlayerExited(MazeDirection direction)
 	{
+		role = "Empty";
 		room.Hide();
+		foreach (Patrol listener in patrolListeners)
+		{
+			listener.React(new IntVec2(-1, -1));
+		}
 	}
 	public void Hide()
 	{
+		if (patrol != null)
+		{
+			patrol.gameObject.SetActive(false);
+		}
 		gameObject.SetActive(false);
 	}
 	public void Show()
 	{
+		if (patrol != null)
+		{
+			patrol.gameObject.SetActive(true);
+		}
 		gameObject.SetActive(true);
 	}
 }

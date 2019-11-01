@@ -10,10 +10,11 @@ public class Player : MonoBehaviour
         currentCell.OnPlayerExited(direction);
         currentCell = newCell;
         transform.localPosition = newCell.transform.localPosition;
-        currentCell.OnPlayerEntered(direction.GetOpposite());
+        currentCell.OnPlayerEntered("Player", direction.GetOpposite());
     }
     public void SetLocation (MazeCell newCell)
     {
+        newCell.role = "Player";
         newCell.room.Show();
         currentCell = newCell;
         transform.localPosition = newCell.transform.localPosition;
@@ -24,6 +25,10 @@ public class Player : MonoBehaviour
         if (edge is MazePassage)
         {
             if (edge is MazeDoor && !(edge as MazeDoor).IsOpened)
+            {
+                return;
+            }
+            if (edge.otherCell.role != "Empty")
             {
                 return;
             }
@@ -54,7 +59,6 @@ public class Player : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
-            Debug.Log("up key");
             TryMove(currentDirection);
         }
         else if (Input.GetKeyDown(KeyCode.RightArrow))
